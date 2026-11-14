@@ -4,6 +4,23 @@
 
 Field Exporter
 
+**Image (paste at the top of the description)**
+
+Images cannot be uploaded to AnkiWeb, but the description renders HTML pointing
+at the raw GitHub URLs. Use one of these:
+
+```html
+<img src="https://raw.githubusercontent.com/dyzur/Anki-Field-Exporter-Addon/main/docs/images/settings-dialog.png" width="600">
+<img src="https://raw.githubusercontent.com/dyzur/Anki-Field-Exporter-Addon/main/docs/images/browser-menu.png" width="400">
+```
+
+GIFs play in AnkiWeb descriptions, videos do not. Shields.io badges work too:
+
+```html
+<img src="https://img.shields.io/badge/Anki-2.1.50%2B-blue">
+<img src="https://img.shields.io/badge/licence-AGPL--3.0-green">
+```
+
 **Description**
 
 Export the fields you choose from selected cards in the Browser — to the

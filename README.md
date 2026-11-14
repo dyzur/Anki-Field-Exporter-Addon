@@ -7,6 +7,15 @@ is set once per note type — pick them in a dialog, no JSON needed.
 Built for people who reuse their card content elsewhere: pasting into notes,
 docs, spreadsheets, or an LLM.
 
+[![Anki 2.1.50+](https://img.shields.io/badge/Anki-2.1.50%2B-blue)](https://apps.ankiweb.net)
+[![Licence: AGPL-3.0](https://img.shields.io/badge/licence-AGPL--3.0-green)](LICENSE)
+[![tests](https://img.shields.io/github/actions/workflow/status/dyzur/Anki-Field-Exporter-Addon/tests.yml?label=tests)](https://github.com/dyzur/Anki-Field-Exporter-Addon/actions/workflows/tests.yml)
+[![AnkiWeb](https://img.shields.io/badge/AnkiWeb-1114764677-orange)](https://ankiweb.net/shared/info/1114764677)
+
+![Field Exporter settings dialog](docs/images/settings-dialog.png)
+
+![Right-click menu in the Browser](docs/images/browser-menu.png)
+
 ## Usage
 
 1. **Tools → Field Exporter…** → tick the fields you want for each note type
@@ -45,7 +54,8 @@ export tells you which path was taken.
 
 ## Install
 
-**From AnkiWeb:** Tools → Add-ons → Get Add-ons… → paste the add-on code.
+**From AnkiWeb:** Tools → Add-ons → Get Add-ons… → paste `1114764677`, or open
+<https://ankiweb.net/shared/info/1114764677> and click *Download*.
 
 **Manual / development:**
 
@@ -115,16 +125,29 @@ make release
 `make release` bumps `mod` in `manifest.json` (Anki's update check uses it) and
 zips the shipped files only — tests, docs and your personal config are excluded.
 
-## Publishing checklist
+## Publishing notes
 
-Repo: <https://github.com/dyzur/Anki-Field-Exporter-Addon>
+Repo: <https://github.com/dyzur/Anki-Field-Exporter-Addon> · AnkiWeb: <https://ankiweb.net/shared/info/1114764677>
 
-- [x] Fill in `homepage` and `author` in `manifest.json`
-- [ ] `make release`
-- [ ] Upload `dist/anki_field_exporter.ankiaddon` at
-      <https://ankiweb.net/shared/addons> (needs a free AnkiWeb account)
-- [ ] After AnkiWeb assigns an ID, add `"ankiweb_id": <id>` to `manifest.json`
-- [ ] Take a screenshot of the settings dialog for the AnkiWeb listing
+AnkiWeb stores a snapshot of the zip, so the two are kept in sync by rule:
+**every zip uploaded to AnkiWeb is built from a commit that is pushed.**
+
+Screenshots live in `docs/images/`. GitHub renders them from the repo; the
+AnkiWeb listing can't host images, so its description embeds the raw URLs
+instead (`https://raw.githubusercontent.com/dyzur/Anki-Field-Exporter-Addon/main/docs/images/...`).
+GIFs work in AnkiWeb descriptions; videos do not.
+
+Releasing an update:
+
+```bash
+make release                                    # bumps "mod", rebuilds dist/
+# AnkiWeb: your add-on -> Upload update -> dist/anki_field_exporter.ankiaddon
+git commit -am "Release 1.0.2" && git push && git tag v1.0.2 && git push --tags
+```
+
+Anki shows users an update prompt when `mod` increases, so it must be bumped for
+every upload. The add-on's AnkiWeb ID is written by AnkiWeb into `meta.json` at
+install time — it is not a `manifest.json` key.
 
 ## Licence
 
