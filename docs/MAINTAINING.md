@@ -49,9 +49,14 @@ and `tests/test_settings_dialog.py` drive the real Qt widgets headlessly
 saving. `tests/_anki_qt.py` bootstraps Anki's Python and Qt for those suites.
 The real collection is never touched.
 
-CI (`.github/workflows/tests.yml`) runs the unit suite on Python 3.9 and 3.13
-plus a packaging check; the Qt suites need an Anki installation, so they only run
-locally.
+CI (`.github/workflows/tests.yml`) runs the unit suite on Python 3.13 — the
+version Anki currently bundles — plus a packaging check. The Qt suites need an
+Anki installation, so they only run locally.
+
+The code must stay **Python 3.9-compatible**, because Anki 2.1.50 (our floor)
+ships 3.9. GitHub's runner images no longer offer a 3.9 build, so that check is
+manual: `python3 tests/test_exporter.py` with a 3.9 interpreter (macOS ships one
+at `/usr/bin/python3`).
 
 ## Releasing
 
