@@ -38,7 +38,12 @@ export, csv, clipboard, copy, fields, browser, content, backup
 
 (put your GitHub URL here)
 
-**Version notes — 1.0.0**
+**Version notes — 1.0.1**
+
+Fixed saving the settings on Anki builds whose add-on manager exposes
+`writeConfig` rather than `setConfig`.
+
+**1.0.0**
 
 First release: per-note-type field selection with a settings dialog, copy as
 TSV, save as CSV, plain-text conversion of field HTML.

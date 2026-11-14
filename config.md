@@ -4,9 +4,9 @@ The easy way is the dialog: **Tools → Field Exporter…**, or right-click a
 selection in the Browser and pick *Field Exporter settings…*. Tick the fields
 you want for each note type, then press **Save**.
 
-The same settings live in this config file, so they can also be edited by hand.
-Column order in the export follows the order of each note type's fields. Field
-names must match the note type exactly.
+The same settings can be edited as JSON here, or from **Tools → Add-ons →
+Field Exporter → Config**. Column order in the export follows the order of each
+note type's fields. Field names must match the note type exactly.
 
 ```json
 {

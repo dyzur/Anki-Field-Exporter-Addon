@@ -46,16 +46,32 @@ def _config() -> Dict[str, Any]:
 
 
 def _save_config(config: Dict[str, Any]) -> None:
-    """Persist through Anki (so a running session sees it) and to disk."""
+    """Persist the config through Anki's add-on manager.
+
+    Anki's API for this is ``writeConfig``; a few builds/older versions expose
+    ``setConfig`` instead, and if neither exists we write ``config.json``.
+    """
     cfg = exporter.normalize_config(config)
-    mw.addonManager.setConfig(ADDON_NAME, cfg)
+    manager = mw.addonManager
+
+    for writer_name in ("writeConfig", "setConfig"):
+        writer = getattr(manager, writer_name, None)
+        if callable(writer):
+            writer(ADDON_NAME, cfg)
+            return
+
     try:
-        path = os.path.join(mw.addonManager.addonsFolder(), ADDON_NAME, "config.json")
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(cfg, handle, indent=2, ensure_ascii=False)
-            handle.write("\n")
-    except Exception:  # pragma: no cover - best effort
-        traceback.print_exc()
+        folder_of = manager.addonsFolder
+    except AttributeError:  # pragma: no cover - defensive
+        return
+    try:
+        folder = folder_of(ADDON_NAME)
+    except TypeError:
+        folder = os.path.join(folder_of(), ADDON_NAME)
+    os.makedirs(folder, exist_ok=True)
+    with open(os.path.join(folder, "config.json"), "w", encoding="utf-8") as handle:
+        json.dump(cfg, handle, indent=2, ensure_ascii=False)
+        handle.write("\n")
 
 
 def _selected_note_ids(browser) -> List[int]:

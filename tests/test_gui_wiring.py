@@ -9,6 +9,7 @@ It builds a throwaway collection and a fake `mw`, so your real collection and
 Anki itself are never opened.
 """
 
+import json
 import os
 import shutil
 import sys
@@ -29,17 +30,21 @@ from aqt.qt import QApplication, QMenu, QWidget  # noqa: E402
 
 
 class FakeAddonManager:
+    """Mirrors the real AddonManager API: getConfig + writeConfig."""
+
     def __init__(self, config):
         self.config = config
+        self.written = []
 
     def getConfig(self, module):
         return dict(self.config)
 
-    def setConfig(self, module, config):
+    def writeConfig(self, module, config):
         self.config = dict(config)
+        self.written.append(dict(config))
 
-    def addonsFolder(self):
-        return tempfile.gettempdir()
+    def addonsFolder(self, module=None):
+        return os.path.join(tempfile.gettempdir(), module) if module else tempfile.gettempdir()
 
 
 class FakeMenu:
@@ -103,6 +108,9 @@ def load_addon():
     return module
 
 
+addon = load_addon()
+
+
 class ContextMenuTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -122,7 +130,8 @@ class ContextMenuTests(unittest.TestCase):
 
         cls.mw = FakeMw(cls.col, CONFIG)
         aqt.mw = cls.mw
-        cls.addon = load_addon()
+        addon.mw = cls.mw
+        cls.addon = addon
 
     @classmethod
     def tearDownClass(cls):
@@ -191,6 +200,79 @@ class ContextMenuTests(unittest.TestCase):
         # no config at all -> point at the settings dialog
         hint = self.addon._hint(result, self.addon.exporter.normalize_config(None))
         self.assertIn("Tools", hint)
+
+class SetConfigOnlyManager:
+    """An Anki build that names its config writer ``setConfig``."""
+
+    def __init__(self):
+        self.config = {}
+        self.calls = 0
+
+    def getConfig(self, module):
+        return dict(self.config)
+
+    def setConfig(self, module, config):
+        self.config = dict(config)
+        self.calls += 1
+
+
+class NoWriterManager:
+    """An Anki build with no usable config writer at all."""
+
+    def __init__(self, folder):
+        self.folder = folder
+
+    def getConfig(self, module):
+        return None
+
+    def addonsFolder(self, module=None):
+        if module is None:
+            return self.folder
+        return os.path.join(self.folder, module)
+
+
+class SaveConfigTests(unittest.TestCase):
+    """Saving from the settings dialog must use the API this Anki really has."""
+
+    def setUp(self):
+        self.tempdir = tempfile.mkdtemp(prefix="field-exporter-save-")
+        self.previous_mw = addon.mw
+        self.previous_aqt_mw = aqt.mw
+
+    def tearDown(self):
+        addon.mw = self.previous_mw
+        aqt.mw = self.previous_aqt_mw
+        shutil.rmtree(self.tempdir, ignore_errors=True)
+
+    def use_manager(self, manager):
+        fake = FakeMw(None, {})
+        fake.addonManager = manager
+        addon.mw = fake
+        return fake
+
+    def test_uses_writeConfig(self):
+        manager = FakeAddonManager({})
+        self.use_manager(manager)
+        addon._save_config({"notetype_fields": {"Basic": ["Front"]}})
+        self.assertEqual(len(manager.written), 1)
+        self.assertEqual(manager.written[0]["notetype_fields"], {"Basic": ["Front"]})
+        # the next export picks the saved config up
+        self.assertEqual(addon._config()["notetype_fields"], {"Basic": ["Front"]})
+
+    def test_falls_back_to_setConfig(self):
+        manager = SetConfigOnlyManager()
+        self.use_manager(manager)
+        addon._save_config({"notetype_fields": {"Cloze": ["Text"]}})
+        self.assertEqual(manager.calls, 1)
+        self.assertEqual(manager.config["notetype_fields"], {"Cloze": ["Text"]})
+
+    def test_falls_back_to_writing_config_json(self):
+        self.use_manager(NoWriterManager(self.tempdir))
+        addon._save_config({"notetype_fields": {"Basic": ["Back"]}})
+        path = os.path.join(self.tempdir, addon.ADDON_NAME, "config.json")
+        with open(path, encoding="utf-8") as handle:
+            saved = json.load(handle)
+        self.assertEqual(saved["notetype_fields"], {"Basic": ["Back"]})
 
 
 if __name__ == "__main__":

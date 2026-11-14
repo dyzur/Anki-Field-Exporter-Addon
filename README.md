@@ -61,8 +61,10 @@ AnkiDroid — they cannot run add-ons.
 
 ## Configuration
 
-Everything can be set in the dialog. The equivalent JSON lives in
-**Tools → Add-ons → Field Exporter → Config** (see `config.md` there too):
+Everything can be set in the dialog — that is the recommended way. The same
+settings are reachable as JSON via **Tools → Add-ons → Field Exporter → Config**
+(see also `config.md`). Anki stores what you save in the add-on's `meta.json`;
+the `config.json` shipped with the add-on is the starting default:
 
 ```json
 {
@@ -76,7 +78,7 @@ Everything can be set in the dialog. The equivalent JSON lives in
 ```
 
 `notetype_fields` maps note type name → field names. The dialog writes the
-fields in each note type's own order; hand-edit the JSON if you want a different
+fields in each note type's own order; edit the JSON if you want a different
 column order.
 
 ## Development
