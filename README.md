@@ -7,6 +7,8 @@
 
 ![Field Exporter settings dialog](docs/images/settings-dialog.png)
 
+IMPORTANT: This was made 100% by AI. 
+
 Right-click any selection in Anki's **Browser** and either copy the fields you
 care about to the clipboard, or save them as a `.csv`. Which fields get exported
 is set once per note type, pick them in a dialog, no JSON needed.
