@@ -1,0 +1,11 @@
+{
+  "package": "anki_field_exporter",
+  "name": "Field Exporter",
+  "author": "David",
+  "homepage": "",
+  "conflicts": [],
+  "mod": 1794649687,
+  "min_point_version": 50,
+  "max_point_version": 0,
+  "human_version": "1.0.0"
+}
