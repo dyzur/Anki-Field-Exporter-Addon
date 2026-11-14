@@ -117,7 +117,9 @@ zips the shipped files only — tests, docs and your personal config are exclude
 
 ## Publishing checklist
 
-- [ ] Fill in `homepage` and `author` in `manifest.json`
+Repo: <https://github.com/dyzur/Anki-Field-Exporter-Addon>
+
+- [x] Fill in `homepage` and `author` in `manifest.json`
 - [ ] `make release`
 - [ ] Upload `dist/anki_field_exporter.ankiaddon` at
       <https://ankiweb.net/shared/addons> (needs a free AnkiWeb account)

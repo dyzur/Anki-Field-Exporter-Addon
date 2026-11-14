@@ -36,7 +36,7 @@ export, csv, clipboard, copy, fields, browser, content, backup
 
 **Support / source**
 
-(put your GitHub URL here)
+https://github.com/dyzur/Anki-Field-Exporter-Addon
 
 **Version notes — 1.0.1**
 

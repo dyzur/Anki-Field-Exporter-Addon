@@ -2,9 +2,9 @@
   "package": "anki_field_exporter",
   "name": "Field Exporter",
   "author": "Dyzur",
-  "homepage": "",
+  "homepage": "https://github.com/dyzur/Anki-Field-Exporter-Addon",
   "conflicts": [],
-  "mod": 1794650302,
+  "mod": 1794650386,
   "min_point_version": 50,
   "max_point_version": 0,
   "human_version": "1.0.1"
